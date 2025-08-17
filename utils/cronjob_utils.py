@@ -55,6 +55,8 @@ def setup_general_cronjob() -> bool:
 
         # Update crontab
         new_cron = "\n".join([line for line in lines if line.strip()])
+        if new_cron and not new_cron.endswith("\n"):
+            new_cron += "\n"
         process = subprocess.Popen(["crontab", "-"], stdin=subprocess.PIPE, text=True)
         process.communicate(input=new_cron)
 
@@ -135,6 +137,8 @@ def remove_all_cronjobs() -> bool:
 
         # Update crontab
         new_cron = "\n".join([line for line in lines if line.strip()])
+        if new_cron and not new_cron.endswith("\n"):
+            new_cron += "\n"
         process = subprocess.Popen(["crontab", "-"], stdin=subprocess.PIPE, text=True)
         process.communicate(input=new_cron)
 
