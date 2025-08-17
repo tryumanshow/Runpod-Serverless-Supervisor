@@ -27,7 +27,7 @@ def send_slack_notification_immediate(message, is_success=True, message_type="re
 
         payload = {
             "channel": slack_config.get("channel", "#runpod-alerts"),
-            "username": slack_config.get("username", "RunPod Scheduler"),
+            "username": slack_config.get("username", "RunPod Supervisor"),
             "icon_emoji": slack_config.get("icon_emoji", ":robot_face:"),
             "blocks": blocks,
         }

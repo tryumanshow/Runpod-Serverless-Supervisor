@@ -1,4 +1,4 @@
-# RunPod Serverless Scheduler
+# RunPod Serverless Supervisor
 
 A tool for managing RunPod serverless model scheduling with a Streamlit web interface.
 
@@ -13,13 +13,15 @@ A tool for managing RunPod serverless model scheduling with a Streamlit web inte
 - **Cronjob Scheduler**: Sends periodic requests to RunPod serverless inference servers
 - **Slack Integration**: Reports scheduling results and status updates to Slack channels
 
-## 🚀 Quick Start
+## 🚀 Quick Start Guide
 
 ### 1. Install Dependencies
 
 ```bash
+# Update pip to the latest version
 pip install --upgrade pip
 
+# Create and activate virtual environment for the project
 python -m venv runpod-serverless-supervisor
 source runpod-serverless-supervisor/bin/activate
 
@@ -50,7 +52,7 @@ cp template/.env.example .env
 - `SLACK_WEBHOOK_URL`: Slack webhook URL (optional)
 - `SLACK_ENABLED`: Enable/disable Slack notifications (default: true)
 - `SLACK_CHANNEL`: Slack channel for notifications (default: #runpod-alerts)
-- `SLACK_USERNAME`: Bot username (default: RunPod Scheduler)
+- `SLACK_USERNAME`: Bot username (default: RunPod Supervisor)
 - `SLACK_ICON_EMOJI`: Bot emoji (default: :robot_face:)
 
 ### 3. Run Web App
@@ -116,7 +118,7 @@ Here's how the scheduler works in practice:
 ## 📁 Project Structure
 
 ```
-runpod-serverless-setup/
+runpod-serverless-supervisor/
 ├── web_interface.py         # Streamlit web app (main)
 ├── runpod_cronjob.py       # Cronjob execution script
 ├── core/

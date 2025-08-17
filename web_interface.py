@@ -1,4 +1,4 @@
-"""RunPod Serverless Scheduler - Streamlit Web Interface"""
+"""RunPod Serverless Supervisor - Streamlit Web Interface"""
 
 import pandas as pd
 import streamlit as st
@@ -18,13 +18,13 @@ from utils.cronjob_utils import (
 )
 
 # Page config
-st.set_page_config(page_title="RunPod Serverless Scheduler", layout="wide")
+st.set_page_config(page_title="RunPod Serverless Supervisor", layout="wide")
 
 
 # Title with refresh button - same horizontal line
 col1, col2 = st.columns([10, 1])
 with col1:
-    st.title("⏰ RunPod Scheduler")
+    st.title("⏰ RunPod Supervisor")
 with col2:
     st.markdown(
         "<div style='margin-top: 1rem; text-align: right;'>", unsafe_allow_html=True

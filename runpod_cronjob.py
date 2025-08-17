@@ -3,6 +3,7 @@
 General RunPod Cronjob Script
 Reads active models from scheduler_config.json and processes them
 """
+
 import json
 import os
 import sys

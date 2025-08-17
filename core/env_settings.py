@@ -50,7 +50,7 @@ def get_slack_config() -> Dict[str, Any]:
     return {
         "webhook_url": webhook_url or "",
         "channel": os.getenv("SLACK_CHANNEL", "#runpod-alerts"),
-        "username": os.getenv("SLACK_USERNAME", "RunPod Scheduler"),
+        "username": os.getenv("SLACK_USERNAME", "RunPod Supervisor"),
         "icon_emoji": os.getenv("SLACK_ICON_EMOJI", ":robot_face:"),
         "enabled": enabled,
     }

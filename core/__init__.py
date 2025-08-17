@@ -1,1 +1,1 @@
-"""Core functionality for RunPod Scheduler"""
+"""Core functionality for RunPod Supervisor"""
