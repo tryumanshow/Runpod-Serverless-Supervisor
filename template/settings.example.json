@@ -1,0 +1,14 @@
+{
+  "ui": {
+    "max_interval": 1440,
+    "default_from_time": "07:30",
+    "default_to_time": "16:30",
+    "default_interval": 60,
+    "auto_refresh_seconds": 5,
+    "timezone": "Asia/Seoul"
+  },
+  "models": [
+    "Qwen/Qwen2.5-7B-Instruct",
+    "Qwen/Qwen2.5-32B-Instruct"
+  ]
+}

@@ -1,0 +1,47 @@
+# ==============================================
+# ENVIRONMENT & SECRETS
+# ==============================================
+.env
+
+# ==============================================
+# PYTHON
+# ==============================================
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Virtual environments
+runpod-serverless-supervisor/
+
+# Package management
+*.egg-info/
+runpod_serverless_scheduler.egg-info/
+
+# ==============================================
+# TESTING & CODE QUALITY
+# ==============================================
+.coverage
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ==============================================
+# PROJECT SPECIFIC
+# ==============================================
+# Configuration files (auto-generated)
+config/scheduler_config.json
+config/settings.json
+
+# Log files
+*.log
+runpod_cronjob.log
+
+# Temporary files
+example.py
+
+# ==============================================
+# SYSTEM FILES
+# ==============================================
+.DS_Store
