@@ -22,6 +22,7 @@ A tool for managing RunPod serverless model scheduling with a Streamlit web inte
 pip install --upgrade pip
 
 # Create and activate virtual environment for the project
+cd runpod-serverless-supervisor
 python -m venv runpod-serverless-supervisor
 source runpod-serverless-supervisor/bin/activate
 
