@@ -81,13 +81,13 @@ st.markdown("---")
 st.markdown("### 🎮 Control Panel")
 
 url = st.text_input("Target URL", placeholder="Your RunPod endpoint ID")
-# Ensure consistent URL format
+# Ensure consistent URL format for OpenAI chat completions endpoint
 if url:
     url = url.strip()
     if url.startswith("https://"):
         target_url = url
     else:
-        target_url = f"https://api.runpod.ai/v2/{url}/runsync"
+        target_url = f"https://api.runpod.ai/v2/{url}/openai/v1/chat/completions"
 else:
     target_url = ""
 model_repo = st.selectbox("Model", options=AVAILABLE_MODELS, index=0)

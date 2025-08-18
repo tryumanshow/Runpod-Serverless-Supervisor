@@ -9,33 +9,31 @@ from .env_settings import get_runpod_api_key
 
 
 def make_runpod_request(
-    target_url: str, model_name: str, message: str = "Scheduled API call"
+    target_url: str, model_name: str, message: str = "API CALL TEST"
 ) -> Dict[str, Any]:
-    """Make a request to RunPod API"""
+    """Make a request to RunPod OpenAI chat completions API"""
     try:
         headers = {
             "Content-Type": "application/json",
-            "Authorization": get_runpod_api_key(),
+            "Authorization": f"Bearer {get_runpod_api_key().replace('Bearer ', '')}",
         }
 
-        data = {"input": {"prompt": message}}
+        data = {
+            "model": model_name,
+            "messages": [{"role": "user", "content": message}],
+            "temperature": 0.9,
+        }
 
-        # Use target_url directly if it's already a full URL, otherwise construct it
-        if target_url.startswith("https://"):
-            url = target_url
-        else:
-            url = f"https://api.runpod.ai/v2/{target_url}/runsync"
+        print(f"Making request to {target_url} with model {model_name}")
 
-        print(f"Making request to {url} with model {model_name}")
-
-        response = requests.post(url, headers=headers, json=data, timeout=600)
+        response = requests.post(target_url, headers=headers, json=data, timeout=600)
 
         if response.status_code == 200:
             result = {
                 "success": True,
                 "timestamp": datetime.now().isoformat(),
                 "model": model_name,
-                "target_url": url,
+                "target_url": target_url,
                 "message": message,
                 "response": response.text,
                 "status_code": response.status_code,
@@ -57,7 +55,7 @@ def make_runpod_request(
                 "success": False,
                 "timestamp": datetime.now().isoformat(),
                 "model": model_name,
-                "target_url": url,
+                "target_url": target_url,
                 "message": message,
                 "error": f"HTTP {response.status_code}: {response.text}",
                 "status_code": response.status_code,
