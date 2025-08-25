@@ -49,12 +49,18 @@ cp template/.env.example .env
 - `models`: Array of available RunPod model names to choose from
 
 **Configure `.env` file** with your actual values:
+
+**Required Settings:**
 - `RUNPOD_API_KEY`: Your RunPod API key (required)
-- `SLACK_WEBHOOK_URL`: Slack webhook URL (optional)
+
+**Slack Integration (Optional):**
+- `SLACK_WEBHOOK_URL`: Slack webhook URL for general notifications
 - `SLACK_ENABLED`: Enable/disable Slack notifications (default: true)
 - `SLACK_CHANNEL`: Slack channel for notifications (default: #runpod-alerts)
 - `SLACK_USERNAME`: Bot username (default: RunPod Supervisor)
 - `SLACK_ICON_EMOJI`: Bot emoji (default: :robot_face:)
+- `SLACK_BOT_TOKEN`: Bot token for Web API-based threaded messaging
+- `SLACK_MENTION_USER`: User ID for critical failure mentions (format: U1234567890)
 
 ### 3. Run Web App
 ```bash
@@ -107,14 +113,21 @@ Here's how the scheduler works in practice:
 
 ## 📊 Features
 
+### Core Functionality
 - **Cold Start Prevention**: Keep serverless models warm with periodic requests
 - **Real-time Monitoring**: Automatic status updates with live dashboard
 - **Multi-model Support**: Schedule multiple models simultaneously
 - **Automatic Cronjob Management**: Persists through system restarts
 - **Immediate Testing**: Performs connection test immediately on START
-- **Slack Integration**: Real-time notifications for status updates and errors
 - **Configurable Timezone**: Support for multiple timezones worldwide
 - **Intuitive UI**: Color-coded status indicators with Streamlit interface
+
+### Advanced Capabilities
+- **Enhanced Slack Integration**: Web API-based threaded messaging with mention notifications for critical alerts
+- **Parallel Processing**: Optimized concurrent scheduling for improved performance and reduced latency
+- **Intelligent Retry Logic**: Automatic retry mechanisms with exponential backoff for API failures
+- **Cold Start Handling**: Specialized handling for serverless model initialization delays
+- **On-demand Testing**: Immediate model validation capabilities through the web interface
 
 ## 📁 Project Structure
 
@@ -147,6 +160,36 @@ runpod-serverless-supervisor/
 - **`config/scheduler_config.json`**: Dynamic scheduler state (auto-generated)
 
 All configurations are managed through the web interface.
+
+### Configuration Reference
+
+#### Environment Variables (.env)
+```bash
+# Required Configuration
+RUNPOD_API_KEY=your_runpod_api_key_here
+
+# Slack Integration (Optional)
+SLACK_WEBHOOK_URL=your_slack_webhook_url          # General notifications
+SLACK_ENABLED=true
+SLACK_CHANNEL=#runpod-alerts
+SLACK_USERNAME=RunPod Supervisor
+SLACK_BOT_TOKEN=xoxb-your-bot-token-here          # Threaded messaging
+SLACK_MENTION_USER=U1234567890                    # Critical alerts
+```
+
+#### Application Settings (config/settings.json)
+```json
+{
+  "ui": {
+    "max_interval": 1440,
+    "default_from_time": "07:30",
+    "default_to_time": "16:30",
+    "default_interval": 60,
+    "timezone": "Asia/Seoul"
+  },
+  "models": ["model1", "model2", "model3"]
+}
+```
 
 ## 🔧 Troubleshooting
 
@@ -197,6 +240,15 @@ The repository includes CI/CD workflows that automatically:
 - Run code linting and formatting checks
 - Perform security scans
 - Validate code quality on every push and PR
+
+## 🔄 Recent Updates
+
+- **Threaded Slack Notifications**: Structured failure alerts and mentions with improved readability through thread organization
+- **Parallel Model Processing**: Optimized concurrent scheduling architecture for enhanced performance and reduced latency
+- **Cold Start Management**: Automated handling of serverless model initialization delays
+- **On-demand Testing**: Immediate model validation capabilities through the web interface
+- **Intelligent Retry Logic**: Enhanced error recovery with detailed failure notifications and exponential backoff
+- **Time Formatting Improvements**: Consistent time display and optimized timezone handling
 
 ---
 

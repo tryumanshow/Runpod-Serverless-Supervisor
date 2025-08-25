@@ -91,6 +91,11 @@ if url:
 else:
     target_url = ""
 model_repo = st.selectbox("Model", options=AVAILABLE_MODELS, index=0)
+run_initial_test = st.checkbox(
+    "Run initial test after setup",
+    value=False,
+    help="Test the endpoint immediately after starting",
+)
 
 # Start/Stop buttons
 col1, col2 = st.columns(2)
@@ -119,19 +124,24 @@ if start_pressed:
             cronjob_success = setup_general_cronjob()
 
             if cronjob_success:
-                # Run immediate test
+                if run_initial_test:
+                    # Run immediate test
+                    test_success = test_immediate_cronjob(model_repo)
 
-                test_success = test_immediate_cronjob(model_repo)
-
-                if test_success:
-                    st.session_state.message = (
-                        "success",
-                        f"✅ Started {model_repo} - Initial test successful! Running every {interval_value} minutes from {from_time.strftime('%H:%M')} to {to_time.strftime('%H:%M')}",
-                    )
+                    if test_success:
+                        st.session_state.message = (
+                            "success",
+                            f"✅ Started {model_repo} - Initial test successful! Running every {interval_value} minutes from {from_time.strftime('%H:%M')} to {to_time.strftime('%H:%M')}",
+                        )
+                    else:
+                        st.session_state.message = (
+                            "warning",
+                            f"⚠️ Started {model_repo} but initial test failed - Check your endpoint URL",
+                        )
                 else:
                     st.session_state.message = (
-                        "warning",
-                        f"⚠️ Started {model_repo} but initial test failed - Check your endpoint URL",
+                        "success",
+                        f"✅ Started {model_repo}! Running every {interval_value} minutes from {from_time.strftime('%H:%M')} to {to_time.strftime('%H:%M')}",
                     )
             else:
                 st.session_state.message = (

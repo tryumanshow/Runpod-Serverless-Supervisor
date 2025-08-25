@@ -7,9 +7,121 @@ import requests
 
 from core.env_settings import (
     DEFAULT_TIMEZONE,
+    get_slack_bot_token,
     get_slack_config,
+    get_slack_mention_user,
     get_timezone_abbreviation,
 )
+
+
+def _format_slack_mention(mention_user: str) -> str:
+    """Format Slack mention based on user ID type"""
+    if mention_user.startswith("S"):
+        return f"<!subteam^{mention_user}>"  # User group
+    elif mention_user.startswith("U"):
+        return f"<@{mention_user}>"  # Individual user
+    else:
+        return f"<!{mention_user}>"  # Channel mentions (here, channel, etc.)
+
+
+def send_failure_notification_with_thread(message, model_name):
+    """Send failure notification via Web API and return message timestamp for threading"""
+    try:
+        bot_token = get_slack_bot_token()
+        slack_config = get_slack_config()
+
+        if not slack_config.get("enabled", False):
+            return None
+
+        channel = slack_config.get("channel", "#runpod-alerts")
+
+        # Create failure message blocks
+        blocks = create_beautiful_message_blocks(
+            message, is_success=False, message_type="regular"
+        )
+
+        payload = {
+            "channel": channel,
+            "blocks": blocks,
+            "username": slack_config.get("username", "RunPod Supervisor"),
+            "icon_emoji": slack_config.get("icon_emoji", ":robot_face:"),
+        }
+
+        headers = {"Authorization": f"Bearer {bot_token}"}
+        response = requests.post(
+            "https://slack.com/api/chat.postMessage",
+            headers=headers,
+            json=payload,
+            timeout=10,
+        )
+
+        if response.status_code == 200:
+            result = response.json()
+            if result.get("ok"):
+                print(f"Failure notification sent via Web API: {message[:50]}...")
+                return result.get("ts")  # Return message timestamp for threading
+            else:
+                print(f"Failure notification failed: {result.get('error')}")
+                return None
+        else:
+            print(f"Failure notification HTTP error: {response.status_code}")
+            return None
+
+    except Exception as e:
+        print(f"Failure notification error: {e}")
+        return None
+
+
+def send_mention_notification(
+    mention_user=None, context_message="API call failed", thread_ts=None
+):
+    """Send mention notification using Bot Token, optionally as a thread reply"""
+    try:
+        bot_token = get_slack_bot_token()
+        slack_config = get_slack_config()
+
+        if not slack_config.get("enabled", False):
+            return
+
+        # Use environment variable if mention_user not provided
+        if mention_user is None:
+            mention_user = get_slack_mention_user()
+
+        channel = slack_config.get("channel", "#runpod-alerts")
+
+        common_message = f"*[URGENT]*: {context_message}. Please take appropriate actions to ensure that the customer does not encounter any issues when using this model."
+        formatted_mention = _format_slack_mention(mention_user)
+        mention_message = f"🚨 {formatted_mention} - {common_message}"
+
+        payload = {
+            "channel": channel,
+            "text": mention_message,
+        }
+
+        # Add thread_ts if provided to make this a thread reply
+        if thread_ts:
+            payload["thread_ts"] = thread_ts
+
+        headers = {"Authorization": f"Bearer {bot_token}"}
+        response = requests.post(
+            "https://slack.com/api/chat.postMessage",
+            headers=headers,
+            json=payload,
+            timeout=60,
+        )
+
+        if response.status_code == 200:
+            result = response.json()
+            if result.get("ok"):
+                thread_info = " (in thread)" if thread_ts else ""
+                print(f"Mention notification sent: @{mention_user}{thread_info}")
+            else:
+                print(f"Mention notification failed: {result.get('error')}")
+        else:
+            print(f"Mention notification HTTP error: {response.status_code}")
+
+    except Exception as e:
+        print(f"Mention notification error: {e}")
 
 
 def send_slack_notification_immediate(message, is_success=True, message_type="regular"):
@@ -47,6 +159,7 @@ def create_beautiful_message_blocks(message, is_success, message_type):
     if message_type == "startup":
         # 🚀 Startup message
         return [
+            {"type": "divider"},
             {
                 "type": "header",
                 "text": {
@@ -72,11 +185,13 @@ def create_beautiful_message_blocks(message, is_success, message_type):
                     }
                 ],
             },
+            {"type": "divider"},
         ]
 
     elif message_type == "shutdown":
         # 🛑 Shutdown message
         return [
+            {"type": "divider"},
             {
                 "type": "header",
                 "text": {"type": "plain_text", "text": "🛑 Daily Operation Ended"},
@@ -99,11 +214,13 @@ def create_beautiful_message_blocks(message, is_success, message_type):
                     }
                 ],
             },
+            {"type": "divider"},
         ]
 
     elif message_type == "test":
         # 🧪 Initial test message
         return [
+            {"type": "divider"},
             {
                 "type": "section",
                 "text": {
@@ -115,7 +232,8 @@ def create_beautiful_message_blocks(message, is_success, message_type):
                     "image_url": "https://img.icons8.com/color/32/000000/test-tube.png",
                     "alt_text": "test",
                 },
-            }
+            },
+            {"type": "divider"},
         ]
 
     else:
@@ -128,11 +246,19 @@ def create_beautiful_message_blocks(message, is_success, message_type):
         )
 
         return [
+            {"type": "divider"},
+            {
+                "type": "header",
+                "text": {
+                    "type": "plain_text",
+                    "text": f"{status_emoji} API Call {'Successful' if is_success else 'Failed'}",
+                },
+            },
             {
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": f"{status_emoji} *API Call {'Successful' if is_success else 'Failed'}*\n{message}",
+                    "text": message,
                 },
                 "accessory": {
                     "type": "image",
@@ -149,4 +275,5 @@ def create_beautiful_message_blocks(message, is_success, message_type):
                     }
                 ],
             },
+            {"type": "divider"},
         ]

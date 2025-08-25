@@ -105,7 +105,16 @@ def test_immediate_cronjob(model_name: str) -> bool:
             from core.env_settings import get_timezone_abbreviation
 
             tz_abbr = get_timezone_abbreviation()
-            message = f"Initial test successful at {call_time.strftime('%Y-%m-%d %H:%M')} {tz_abbr}\nModel: `{model_name}`\nEndpoint: `{target_url}`\nScheduled: Every {interval_minutes} minutes ({from_time} ~ {to_time})"
+            # Import the utility function
+            import os
+            import sys
+
+            script_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            sys.path.insert(0, script_dir)
+            from runpod_cronjob import _extract_endpoint_display
+
+            endpoint_display = _extract_endpoint_display(target_url)
+            message = f"Initial test successful at {call_time.strftime('%Y-%m-%d %H:%M')} {tz_abbr}\nModel: `{model_name}`\nEndpoint: <{target_url}|{endpoint_display}>\nScheduled: Every {interval_minutes} minutes ({from_time} ~ {to_time})"
             send_slack_notification_immediate(
                 message, is_success=True, message_type="test"
             )

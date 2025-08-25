@@ -5,6 +5,10 @@ import os
 from datetime import datetime
 from typing import Any, Dict, Optional
 
+import pytz
+
+from .env_settings import DEFAULT_TIMEZONE
+
 CONFIG_FILE = "config/scheduler_config.json"
 
 
@@ -70,7 +74,7 @@ def set_model_config(
         "interval_minutes": interval_minutes,
         "active": active,
         "status": status,  # "testing", "running", "stopped"
-        "last_updated": datetime.now().isoformat(),
+        "last_updated": datetime.now(pytz.timezone(DEFAULT_TIMEZONE)).isoformat(),
     }
 
     return save_config(config)
@@ -82,7 +86,9 @@ def deactivate_model(model_name: str) -> bool:
     if "models" in config and model_name in config["models"]:
         config["models"][model_name]["active"] = False
         config["models"][model_name]["status"] = "stopped"
-        config["models"][model_name]["last_updated"] = datetime.now().isoformat()
+        config["models"][model_name]["last_updated"] = datetime.now(
+            pytz.timezone(DEFAULT_TIMEZONE)
+        ).isoformat()
         return save_config(config)
     return False
 
@@ -92,6 +98,8 @@ def update_model_status(model_name: str, status: str) -> bool:
     config = load_config()
     if "models" in config and model_name in config["models"]:
         config["models"][model_name]["status"] = status
-        config["models"][model_name]["last_updated"] = datetime.now().isoformat()
+        config["models"][model_name]["last_updated"] = datetime.now(
+            pytz.timezone(DEFAULT_TIMEZONE)
+        ).isoformat()
         return save_config(config)
     return False

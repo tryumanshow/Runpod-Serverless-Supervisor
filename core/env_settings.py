@@ -38,6 +38,20 @@ def get_runpod_api_key() -> str:
     return api_key
 
 
+def get_slack_bot_token() -> str:
+    """Get Slack Bot Token from environment variables"""
+    bot_token = os.getenv("SLACK_BOT_TOKEN")
+    if not bot_token:
+        raise ValueError("SLACK_BOT_TOKEN not found in environment variables")
+    return bot_token
+
+
+def get_slack_mention_user() -> str:
+    """Get Slack mention user from environment variables"""
+    mention_user = os.getenv("SLACK_MENTION_USER", "Seungwoo Ryu")
+    return mention_user
+
+
 def get_slack_config() -> Dict[str, Any]:
     """Get Slack configuration from environment variables"""
     webhook_url = os.getenv("SLACK_WEBHOOK_URL")

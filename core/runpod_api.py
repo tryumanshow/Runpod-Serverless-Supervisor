@@ -3,9 +3,10 @@
 from datetime import datetime
 from typing import Any, Dict
 
+import pytz
 import requests
 
-from .env_settings import get_runpod_api_key
+from .env_settings import DEFAULT_TIMEZONE, get_runpod_api_key
 
 
 def make_runpod_request(
@@ -31,7 +32,7 @@ def make_runpod_request(
         if response.status_code == 200:
             result = {
                 "success": True,
-                "timestamp": datetime.now().isoformat(),
+                "timestamp": datetime.now(pytz.timezone(DEFAULT_TIMEZONE)).isoformat(),
                 "model": model_name,
                 "target_url": target_url,
                 "message": message,
@@ -53,7 +54,7 @@ def make_runpod_request(
         else:
             result = {
                 "success": False,
-                "timestamp": datetime.now().isoformat(),
+                "timestamp": datetime.now(pytz.timezone(DEFAULT_TIMEZONE)).isoformat(),
                 "model": model_name,
                 "target_url": target_url,
                 "message": message,
@@ -80,7 +81,7 @@ def make_runpod_request(
     except Exception as e:
         result = {
             "success": False,
-            "timestamp": datetime.now().isoformat(),
+            "timestamp": datetime.now(pytz.timezone(DEFAULT_TIMEZONE)).isoformat(),
             "model": model_name,
             "target_url": target_url,
             "message": message,
