@@ -68,6 +68,7 @@ streamlit run web_interface.py
 ```
 
 It will open automatically in your browser or access http://localhost:8501.
+Of course, you can also set a different port number by using a command like `streamlit run web_interface.py --server.port 8502`.
 
 The page may appear as follows:
 
@@ -99,13 +100,13 @@ The page may appear as follows:
 
 Here's how the scheduler works in practice:
 
-1. **Configure and Start**: Set your schedule (e.g., 3:30 AM to 3:33 PM every minute) and press START
+1. **Configure and Start**: Set your schedule (`From` and `To`) and press START
 2. **Status Updates**: The status table immediately shows "🟢 Running" for your model
 
 ![Image](./images/streamlit2.png)
 
-3. **Automatic Scheduling**: Between 3:30 AM and 3:33 PM, requests are sent every minute to keep your serverless model warm
-4. **Slack Notifications**: All scheduling activities are logged to Slack in real-time
+3. **Automatic Scheduling**: Between `From` and `To`, requests are sent every `Interval` to keep your serverless model warm
+4. **Slack Notifications**: All scheduling activities are logged to Slack in real-time. The following example is just one case tested only on the `Qwen/Qwen2.5-32B-Instruct` model.
 
 ![Image](./images/slack.png)
 

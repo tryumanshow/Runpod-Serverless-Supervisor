@@ -68,7 +68,7 @@ with col3:
     st.markdown("##### Interval (min)")
     interval_value = st.number_input(
         "Interval",
-        min_value=1,
+        min_value=30,
         max_value=MAX_INTERVAL,
         value=DEFAULT_INTERVAL,
         label_visibility="collapsed",
