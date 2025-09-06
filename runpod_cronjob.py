@@ -69,7 +69,7 @@ def handle_cold_start(target_url, model_name, message, tz_abbr):
         if result.get("success", False):
             # Send success message immediately and exit
             endpoint_display = _extract_endpoint_display(target_url)
-            success_message = f"🔥 **Cold Start Successful**\n\n*Model:* `{model_name}`\n*Attempt:* {attempt}/{MAX_ATTEMPTS}\n*Start Time:* {_time_prettify(attempt_start_time)} {tz_abbr}\n*Response Time:* {_time_prettify(attempt_end_time)} {tz_abbr}\n*Endpoint:* <{target_url}|{endpoint_display}>"
+            success_message = f"🔥 *Cold Start Successful*\n\n*Model:* `{model_name}`\n*Attempt:* {attempt}/{MAX_ATTEMPTS}\n*Start Time:* {_time_prettify(attempt_start_time)} {tz_abbr}\n*Response Time:* {_time_prettify(attempt_end_time)} {tz_abbr}\n*Endpoint:* <{target_url}|{endpoint_display}>"
             print(f"Cold start successful on attempt {attempt} for {model_name}")
             send_slack_notification(
                 success_message, is_success=True, message_type="coldstart"
@@ -86,7 +86,7 @@ def handle_cold_start(target_url, model_name, message, tz_abbr):
     # Send failure message if all 4 attempts failed
     final_failure_time = datetime.now(tz)
     endpoint_display = _extract_endpoint_display(target_url)
-    failure_message = f"❄️ **Cold Start Failed**\n\n*Model:* `{model_name}`\n*Total Attempts:* {MAX_ATTEMPTS}\n*Final Attempt Time:* {_time_prettify(final_failure_time)} {tz_abbr}\n*Endpoint:* <{target_url}|{endpoint_display}>\n*Status:* All {MAX_ATTEMPTS} attempts failed"
+    failure_message = f"❄️ *Cold Start Failed*\n\n*Model:* `{model_name}`\n*Total Attempts:* {MAX_ATTEMPTS}\n*Final Attempt Time:* {_time_prettify(final_failure_time)} {tz_abbr}\n*Endpoint:* <{target_url}|{endpoint_display}>\n*Status:* All {MAX_ATTEMPTS} attempts failed"
     print(f"Cold start failed after {MAX_ATTEMPTS} attempts for {model_name}")
     send_slack_notification(failure_message, is_success=False, message_type="coldstart")
 
@@ -120,7 +120,7 @@ def process_single_model(model_name, model_config, now, tz_abbr):
         if current_t.hour == from_t.hour and current_t.minute == from_t.minute:
             start_date = now.strftime("%Y-%m-%d")
             endpoint_display = _extract_endpoint_display(target_url)
-            startup_message = f"**Daily operations started for {start_date}**\n\n*Model:* `{model_name}`\n*Endpoint:* <{target_url}|{endpoint_display}>\n*Schedule:* {from_time} ~ {to_time} {tz_abbr}\n*Interval:* Every {interval_minutes} minutes"
+            startup_message = f"*Daily operations started for {start_date}*\n\n*Model:* `{model_name}`\n*Endpoint:* <{target_url}|{endpoint_display}>\n*Schedule:* {from_time} ~ {to_time} {tz_abbr}\n*Interval:* Every {interval_minutes} minutes"
             print(f"Sending startup notification for {model_name}")
             send_slack_notification(
                 startup_message, is_success=True, message_type="startup"
@@ -141,7 +141,7 @@ def process_single_model(model_name, model_config, now, tz_abbr):
             and current_t.minute == 0
         ):
             end_date = now.strftime("%Y-%m-%d")
-            message = f"**Daily operation completed for {end_date}**\n\n*Model:* `{model_name}`\n*Schedule:* {from_time} ~ {to_time} {tz_abbr}\n*Next Start:* Tomorrow at {from_time} {tz_abbr}"
+            message = f"*Daily operation completed for {end_date}*\n\n*Model:* `{model_name}`\n*Schedule:* {from_time} ~ {to_time} {tz_abbr}\n*Next Start:* Tomorrow at {from_time} {tz_abbr}"
             print(f"Sending end-of-day notification for {model_name}")
             send_slack_notification(message, is_success=True, message_type="shutdown")
 
